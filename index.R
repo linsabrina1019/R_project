@@ -35,6 +35,7 @@ cal<- function(x)
     return(file)
   } 
 }
+#使用前記得用setwd()把console路徑設到repository的資料夾
 direction <- dir('./')
 fileset<-lapply(sort(direction),cal)
 names(fileset) <- direction
