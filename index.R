@@ -2,10 +2,11 @@ library(dplyr)
 library(readr)
 library(stringr)
 pa <- function(x){
+  if(grepl("[0-9]",x))
   x <- as.numeric(str_replace(x,"%",""))
   return (x)
 }
-cal<- function(x)
+cal <- function(x)
 {
 
   if(grepl("107.csv",x)){
@@ -16,19 +17,19 @@ cal<- function(x)
     colnames(file)[[14]]<-"death"
     colnames(file)[[21]]<-"personnel1"
     colnames(file)[[22]]<-"personnel2"
-    file[20]<-lapply(file[20],pa)
-    file <- select(file,c(10,11,12,14,20,21,22)) %>% 
-      mutate("adopt_threat(%)" = 100 - 100*((adopt1 + adopt2) / total),"death_threat(%)" = 100*death / total,
+    file<-as.tibble(lapply(file,pa))
+    View(file)
+    file <- mutate(file,"adopt_threat(%)" = 100 - 100*((adopt1 + adopt2) / total),"death_threat(%)" = 100*death / total,
              "reliability(%)" = 100*((adopt1 + adopt2) / total) - 80 + 10 - 100*death / total,
              "animals_per_person" = total / (personnel1 + personnel2)) %>% 
-              select(c(5,8:11))
+              select(c(20,23:26))
+    return (file)
       }
   else if(grepl(".csv",x)){
     file <- read_csv(x)
     colnames(file)[[4]]<-"adopt"
     colnames(file)[[6]]<-"death"
-    file[4]<-lapply(file[4],pa)
-    file[6]<-lapply(file[6],pa)
+    file<-as.tibble(lapply(file,pa))
     file <- select(file,c(4,6)) %>% 
       mutate("adopt_threat(%)" = 100 - adopt,"death_threat(%)" = death,"reliability(%)" = adopt - 80 + 10 - death) %>% 
       select(c(3:5))
