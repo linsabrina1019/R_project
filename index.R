@@ -22,7 +22,7 @@ cal <- function(x)
     file <- mutate(file,"adopt_threat(%)" = 100 - 100*((adopt1 + adopt2) / total),"death_threat(%)" = 100*death / total,
              "reliability(%)" = 100*((adopt1 + adopt2) / total) - 80 + 10 - 100*death / total,
              "animals_per_person" = total / (personnel1 + personnel2)) %>% 
-              select(c(20,23:26))
+              select(c(1,20,23:26))
     return (file)
       }
   else if(grepl(".csv",x)){
@@ -30,9 +30,9 @@ cal <- function(x)
     colnames(file)[[4]]<-"adopt"
     colnames(file)[[6]]<-"death"
     file<-as.tibble(lapply(file,pa))
-    file <- select(file,c(4,6)) %>% 
+    file <- select(file,c(1,4,6)) %>% 
       mutate("adopt_threat(%)" = 100 - adopt,"death_threat(%)" = death,"reliability(%)" = adopt - 80 + 10 - death) %>% 
-      select(c(3:5))
+      select(c(1,4:6))
     return(file)
   } 
 }
